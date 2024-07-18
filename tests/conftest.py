@@ -1,3 +1,4 @@
+import configparser
 import pytest
 import datetime
 
@@ -12,18 +13,26 @@ from selenium import webdriver
 # reads parameters from pytest command line
 def pytest_addoption(parser):
     parser.addoption("--browser", action="store", default="chrome", help="browser that the automation will run in")
-    parser.addoption("--env", action="store", default="Dev", help="browser that the automation will run in")
+    parser.addoption("--env", action="store", default="DEV", help="browser that the automation will run in")
   
   
 @pytest.fixture(scope='session')
-def read_properties():
-    config = ReadProperties('prop.ini')
-    return config
+def environment_config(pytestconfig):
+    # Get the environment name and read config file
+    env = pytestconfig.getoption("env")
+    config = configparser.ConfigParser()
+    config.read('config.ini')
+    
+    # Return the section of the configuration based on the environment
+    if env in config:
+        return config[env]
+    else:
+        raise ValueError(f"Environment '{env}' not found in the configuration file")
 
  
 @pytest.fixture(scope="session")
-def app():
-    return Application()
+def app(environment_config):
+    return Application(environment_config)
 
 
 @pytest.fixture(scope='function')
@@ -33,10 +42,10 @@ def create_user(app: Application):
 
 
 @pytest.fixture(scope='function')
-def create_driver(read_properties, request):
+def create_driver(environment_config, request):
     """Note: The request object in pytest fixtures provides access to information about the executing test function or class."""
     browser = request.config.option.browser
-    base_url = read_properties.get_config_section("DEV")["base_url"]
+    base_url = environment_config['base_url']
     
     if browser == "safari":
         options = webdriver.SafariOptions()
