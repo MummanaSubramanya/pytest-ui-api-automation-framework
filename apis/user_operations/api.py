@@ -1,6 +1,5 @@
 from apis.user_operations.model import GetUserResponse, User, RegisterUserResponse
 from requests import Response
-from utils.constants import USER_API_BASE_URL
 from utils.serialize_response import structure_response
 
 
@@ -9,8 +8,9 @@ class UserOperations:
     CREATE_USER_ENDPOINT = '/users'
     USER_ENDPOINT = f'{CREATE_USER_ENDPOINT}/me'
     
-    def __init__(self, app) -> None:
+    def __init__(self, app, url) -> None:
         self.app = app
+        self.url = url
     
     
     def create_new_user_response(self, data: User) -> Response:
@@ -18,7 +18,7 @@ class UserOperations:
         try:
             response = http_client.request(
                 method="POST",
-                url=f'{USER_API_BASE_URL}{self.CREATE_USER_ENDPOINT}',
+                url=f'{self.url}{self.CREATE_USER_ENDPOINT}',
                 json = data.to_dict()
             )
             return response
@@ -35,7 +35,7 @@ class UserOperations:
     def delete_user_response(self, token: str) -> Response:
         response = self.app.client.request(
             method="DELETE",
-            url=f'{USER_API_BASE_URL}{self.USER_ENDPOINT}',
+            url=f'{self.url}{self.USER_ENDPOINT}',
             headers={"Authorization": f"Bearer {token}"},
         )
         return response
@@ -49,7 +49,7 @@ class UserOperations:
     def get_user_response(self, token: str) -> Response:
         response = self.app.client.request(
             method="GET",
-            url=f'{USER_API_BASE_URL}{self.USER_ENDPOINT}',
+            url=f'{self.url}{self.USER_ENDPOINT}',
             headers={"Authorization": f"Bearer {token}"},
         )
         return response
