@@ -47,12 +47,12 @@ jobs:
       run: pytest -m web --browser ${{ matrix.browser }} --junit-xml=test-results.xml
 
     - name: Publish Test Report
-        if: always()
-        uses: EnricoMi/publish-unit-test-result-action@v2
-        with:
-          check_name: UI Test Results - ${{ matrix.browser }}
-          files: |
-            test-results.xml
+      if: always()
+      uses: EnricoMi/publish-unit-test-result-action@v2
+      with:
+        check_name: UI Test Results - ${{ matrix.browser }}
+        files: |
+          test-results.xml
 
   run-api-tests:
     runs-on: ubuntu-latest
@@ -78,11 +78,11 @@ jobs:
       run: pytest -m api --junit-xml=test-results.xml
     
     - name: Publish Test Report
-        if: always()
-        uses: EnricoMi/publish-unit-test-result-action@v2
-        with:
-          check_name: API Test Results
-          files: |
-            test-results.xml
+      if: always()
+      uses: EnricoMi/publish-unit-test-result-action@v2
+      with:
+        check_name: API Test Results
+        files: |
+          test-results.xml
 
 
