@@ -54,6 +54,10 @@ def create_driver(environment_config, request):
         opts = webdriver.ChromeOptions()
         opts.add_argument("--headless")
         driver = webdriver.Chrome(options=opts)
+    elif browser == "firefox":
+        opts = webdriver.FirefoxOptions()
+        opts.add_argument("--headless")
+        driver = webdriver.Firefox(options=opts)
     else:
         raise ValueError(f'{browser} is not availble.')
     
