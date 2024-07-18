@@ -1,5 +1,5 @@
-cattrs==23.2.0
 attrs==23.2.0
+cattrs==23.2.0
 pytest==8.2.2
 pytest-xdist==3.6.1
 pytest-html==4.1.1
