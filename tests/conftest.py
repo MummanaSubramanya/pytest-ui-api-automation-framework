@@ -69,6 +69,29 @@ def create_driver(environment_config, request):
         screenshot_name = 'screenshot on failure: %s' % datetime.now().strftime('%d/%m/%Y, %H:%M:%S')
     driver.quit()
 
+
+@pytest.fixture(params=["chrome", "edge"], scope="function")
+def multi_driver(environment_config, request: pytest.FixtureRequest):
+    base_url = environment_config['base_url']
+    if request.param == "edge":
+        opts = webdriver.EdgeOptions()
+        opts.add_argument("--headless")
+        driver = webdriver.Edge(options=opts)
+    elif request.param == "chrome":
+        opts = webdriver.ChromeOptions()
+        opts.add_argument("--headless")
+        driver = webdriver.Chrome(options=opts)
+    elif request.param == "firefox":
+        opts = webdriver.FirefoxOptions()
+        opts.add_argument("--headless")
+        driver = webdriver.Firefox(options=opts)
+    else:
+        raise ValueError(f'{request.param} is not availble.')
+    driver.get(base_url)
+    driver.maximize_window()
+    yield driver
+    driver.quit()   
+
  
 @pytest.hookimpl(tryfirst=True, hookwrapper=True)
 def pytest_runtest_makereport(item, call):
