@@ -58,6 +58,10 @@ def create_driver(environment_config, request):
         opts = webdriver.FirefoxOptions()
         opts.add_argument("--headless")
         driver = webdriver.Firefox(options=opts)
+    elif browser == "edge":
+        opts = webdriver.EdgeOptions()
+        opts.add_argument("--headless")
+        driver = webdriver.Edge(options=opts)
     else:
         raise ValueError(f'{browser} is not availble.')
     
@@ -70,7 +74,7 @@ def create_driver(environment_config, request):
     driver.quit()
 
 
-@pytest.fixture(params=["chrome", "edge"], scope="function")
+@pytest.fixture(params=["chrome", "edge", "firefox"], scope="function")
 def multi_driver(environment_config, request: pytest.FixtureRequest):
     base_url = environment_config['base_url']
     if request.param == "edge":
